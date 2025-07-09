@@ -37,69 +37,70 @@ export default function RegisterPage() {
 
   return (
     <div>
-      <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-4 max-w-md mx-auto mt-10"
-    >
-      <h2 className="text-2xl font-semibold text-center">Đăng ký</h2>
+      <div className='mt-50'>
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4 max-w-md mx-auto mt-10">
+            <h2 className="text-2xl font-semibold text-center">Đăng ký</h2>
 
-      <input
-        type="text"
-        name="username"
-        placeholder="Tên người dùng"
-        value={formData.username}
-        onChange={handleChange}
-        required
-        className="w-full border border-gray-300 p-2 rounded"
-      />
+            <input
+              type="text"
+              name="username"
+              placeholder="Tên người dùng"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 p-2 rounded"
+            />
 
-      <input
-        type="text"
-        name="phone"
-        placeholder="Số điện thoại"
-        value={formData.phone}
-        onChange={handleChange}
-        required
-        className="w-full border border-gray-300 p-2 rounded"
-      />
+            <input
+              type="text"
+              name="phone"
+              placeholder="Số điện thoại"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 p-2 rounded"
+            />
 
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleChange}
-        required
-        className="w-full border border-gray-300 p-2 rounded"
-      />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 p-2 rounded"
+            />
 
-      <input
-        type="password"
-        name="password"
-        placeholder="Mật khẩu"
-        value={formData.password}
-        onChange={handleChange}
-        required
-        className="w-full border border-gray-300 p-2 rounded"
-      />
+            <input
+              type="password"
+              name="password"
+              placeholder="Mật khẩu"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 p-2 rounded"
+            />
 
-      <select
-        name="role"
-        value={formData.role}
-        onChange={handleChange}
-        className="w-full border border-gray-300 p-2 rounded"
-      >
-        <option value="user">Người dùng</option>
-        <option value="admin">Quản trị viên</option>
-      </select>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="w-full border border-gray-300 p-2 rounded"
+            >
+              <option value="user">Người dùng</option>
+              <option value="admin">Quản trị viên</option>
+            </select>
 
-      <button
-        type="submit"
-        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-      >
-        Đăng ký
-      </button>
-    </form>
+            <button
+              type="submit"
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              Đăng ký
+            </button>
+        </form>
+      </div>
     </div>
   )
 }

@@ -13,9 +13,14 @@ export default function LoginForm() {
     e.preventDefault();
 
     try{
-      await api.post('/auth/login',
-        { phone, password, },
-      );
+      const res = await api.post('/auth/login', {
+        phone,
+        password
+      });
+
+      localStorage.setItem('userId', res.data.user_id);
+      console.log('userId', res.data.user_id);
+      
 
       router.push('/profile');
     } catch (error){
@@ -24,38 +29,46 @@ export default function LoginForm() {
     }
   }
   return (
-    <form
-      onSubmit={handleLogin}
-      className="flex flex-col gap-4 max-w-md mx-auto mt-10"
-    >
-      <div>
-        <label className="block text-gray-700 mb-2">phone:</label>
-        <input
-          type="text"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          required
-          className="w-full border border-gray-300 p-2 rounded"
-        />
-      </div>
+    <div>
+      <div className="mt-50">
+        <div className="text-center">
+          <h1 className="text-5xl my-3.5 ">Login</h1>
+        </div>
+        <form
+          onSubmit={handleLogin}
+          className="flex flex-col gap-4 max-w-md mx-auto mt-10"
+        >
+          <div>
+            <label className="block text-gray-700 mb-2">phone:</label>
+            <input
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              className="w-full border border-gray-300 p-2 rounded"
+            />
+          </div>
 
-      <div>
-        <label className="block text-gray-700 mb-2">Password:</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full border border-gray-300 p-2 rounded"
-        />
-      </div>
+          <div>
+            <label className="block text-gray-700 mb-2">Password:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full border border-gray-300 p-2 rounded"
+            />
+          </div>
 
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Đăng nhập
-      </button>
-    </form>
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Đăng nhập
+          </button>
+        </form>
+      </div>
+    </div>
+    
   );
 }

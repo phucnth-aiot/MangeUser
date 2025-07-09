@@ -14,10 +14,13 @@ export async function POST(req: NextRequest) {
           }
         );
 
-        const { access_token, refresh_token } = authenResponse.data;
+        const { user_id, access_token, refresh_token } = authenResponse.data;
         
         const res = NextResponse.json(
-            {message: 'login successfully'},
+            {
+              message: 'login successfully',
+              user_id: user_id
+            },
             {status: 200}
         )
 
@@ -40,7 +43,7 @@ export async function POST(req: NextRequest) {
           maxAge: 60 * 60 * 24 * 7,
           path:'/'
         })
-
+        
         return res;
     } catch (error: unknown) {
         if (error instanceof AxiosError) {
