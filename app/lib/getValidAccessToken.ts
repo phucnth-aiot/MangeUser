@@ -11,7 +11,7 @@ export async function getValidAccessToken(req: NextRequest) {
   if (!accessToken && refreshToken && userId) {
     // const response = await api.post(`${baseURL}/auth/refresh/${userId}`, {
     const response = await api.post(`http://localhost:3030/auth/refresh/${userId}`, {
-      refresh_token: refreshToken,
+      refreshToken: refreshToken,
     });
 
     if (response.status === 200) {

@@ -14,13 +14,6 @@ export async function GET(
   if (response) {
     return response; // Trả về redirect hoặc set cookie
   }
-  
-  if (!accessToken) {
-    return NextResponse.json(
-      { message: 'No access token' },
-      { status: 401 }
-    );
-  }
 
   try {
     const response = await api.get(`users/${id}`, {
