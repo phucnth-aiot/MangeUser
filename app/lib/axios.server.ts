@@ -17,17 +17,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    const token =
-      typeof window !== "undefined"
-        ? localStorage.getItem("accessToken")
-        : null;
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    console.log("✅ Axios is calling port:", baseURL);
-
+    console.log("Axios is calling port:", baseURL);
     return config;
   },
   (error) => {

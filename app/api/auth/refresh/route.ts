@@ -3,8 +3,8 @@ import api from '../../../lib/axios.server';
 
 
 export async function POST(req: NextRequest) {
-  // Lấy refresh_token từ cookie
   const refreshToken = req.cookies.get('refresh_token')?.value;
+  const user_id = req.cookies.get('user_id')?.value;
 
   if (!refreshToken) {
     return NextResponse.json(
@@ -14,12 +14,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const response = await api.post('/auth/refresh', {
+    const response = await api.post(`/auth/refresh/${user_id}`, {
       refresh_token: refreshToken,
     });
 
     const { access_token, refresh_token: newRefreshToken } = response.data;
-
+    console.log("đã refresh token");
+    
     const res = NextResponse.json(
       { message: "Token refreshed successfully" },
       { status: 200 }

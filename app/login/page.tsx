@@ -13,14 +13,13 @@ export default function LoginForm() {
     e.preventDefault();
 
     try{
-      const res = await api.post('/auth/login', {
+      await api.post('/auth/login', {
         phone,
         password
       });
-
-      localStorage.setItem('userId', res.data.user_id);
-      console.log('userId', res.data.user_id);
       
+      // console.log('userId', res.data.user_id);
+      // console.log("✅ Response data:", res.data);
 
       router.push('/profile');
     } catch (error){
@@ -39,7 +38,7 @@ export default function LoginForm() {
           className="flex flex-col gap-4 max-w-md mx-auto mt-10"
         >
           <div>
-            <label className="block text-gray-700 mb-2">phone:</label>
+            <label className="block text-gray-700 mb-2">phone: 0511255126 0999999999</label>
             <input
               type="text"
               value={phone}
@@ -50,7 +49,7 @@ export default function LoginForm() {
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-2">Password:</label>
+            <label className="block text-gray-700 mb-2">Password: phuchoang123</label>
             <input
               type="password"
               value={password}

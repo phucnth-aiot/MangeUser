@@ -14,16 +14,17 @@ export async function POST(req: NextRequest) {
           }
         );
 
-        const { user_id, access_token, refresh_token } = authenResponse.data;
+        const { user_id, role, access_token, refresh_token } = authenResponse.data;
         
         const res = NextResponse.json(
             {
               message: 'login successfully',
-              user_id: user_id
             },
             {status: 200}
         )
-
+        // console.log('✅ Login success. user_id =', user_id);
+        // console.log('res = ', res);
+        
         res.cookies.set({
           name: 'access_token',
           value: access_token,
@@ -42,6 +43,26 @@ export async function POST(req: NextRequest) {
           sameSite: 'strict',
           maxAge: 60 * 60 * 24 * 7,
           path:'/'
+        })
+
+        res.cookies.set({
+          name: 'role',
+          value: role,
+          httpOnly: false,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 60 * 15,
+          path: '/'
+        })
+
+        res.cookies.set({
+          name: 'user_id',
+          value: user_id,
+          httpOnly: false,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 60 * 15,
+          path: '/'
         })
         
         return res;
