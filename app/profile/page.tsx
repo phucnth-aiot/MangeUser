@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import api from "../lib/axios.client";
+import api from "../lib/axios.config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 

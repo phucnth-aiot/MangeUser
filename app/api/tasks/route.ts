@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import api from "../../lib/axios.server";
+import api from '../../lib/axios.config';
 import { AxiosError } from "axios";
 
 export async function GET(req: NextRequest) {

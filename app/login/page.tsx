@@ -1,7 +1,7 @@
 'use client'
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import api from '../lib/axios.client'
+import api from '../lib/axios.config'
 
 export default function LoginForm() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function LoginForm() {
         phone,
         password
       });
-      
+
       // console.log('userId', res.data.user_id);
       // console.log("✅ Response data:", res.data);
 
@@ -38,7 +38,7 @@ export default function LoginForm() {
           className="flex flex-col gap-4 max-w-md mx-auto mt-10"
         >
           <div>
-            <label className="block text-gray-700 mb-2">phone: 0511255126 0999999999</label>
+            <label className="block text-gray-700 mb-2">phone: 0888888888 0222222222</label>
             <input
               type="text"
               value={phone}

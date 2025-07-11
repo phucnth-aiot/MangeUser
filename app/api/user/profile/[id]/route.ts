@@ -1,41 +1,25 @@
-import { NextRequest, NextResponse } from 'next/server';
-import api from '../../../../lib/axios.server';
-import { AxiosError } from 'axios';
-import { getValidAccessToken } from '../../../../lib/getValidAccessToken'
+import { NextResponse } from 'next/server';
+import api from '../../../../lib/axios.config';
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const id = params.id;
+interface UserResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    userid: string;
+    username: string;
+    phone: string;
+    email: string;
+    role: string;
+    avatarUrl?: string;
+  };
+}
 
-  const { accessToken, response } = await getValidAccessToken(req);
-
-  if (response) {
-    return response; // Trả về redirect hoặc set cookie
-  }
-
+export async function GET() {
   try {
-    const response = await api.get(`users/${id}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    return NextResponse.json(
-      { message: 'Call user profile successful', data: response.data },
-      { status: 200 }
-    );
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      console.error('Lỗi từ BE:', error.response?.data || error.message);
-    } else {
-      console.error('Lỗi không xác định:', String(error));
-    }
-
-    return NextResponse.json(
-      { message: 'Access profile fail' },
-      { status: 400 }
-    );
+    const response = await api.get<UserResponse>('/users/me');
+    return NextResponse.json(response, { status: response.status });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to fetch user';
+    return NextResponse.json({ message }, { status: 401 });
   }
 }
