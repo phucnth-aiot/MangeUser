@@ -1,25 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
 
-const protectedRoutes = ['/profile','tasks']
+export function middleware(req: NextRequest) {
+  const token = req.cookies.get("access_token");
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-  const accessToken = request.cookies.get('access_token')?.value
-  console.log('ACCESSTOKEN MIDDLE WARE', accessToken);
-
-  if (!protectedRoutes.includes(pathname)) {
-    return NextResponse.next()
+  if (!token && req.nextUrl.pathname.startsWith("/users")) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  if (accessToken) {
-    return NextResponse.next()
-  } 
-  
-
-  const loginUrl = new URL('/login', request.url)
-  return NextResponse.redirect(loginUrl)
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/profile/:path*', '/tasks/:path*'],
-}
+  matcher: ["/users/:path*"],
+};

@@ -1,73 +1,44 @@
-'use client'
+"use client";
+
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import api from '../lib/axios.config'
+import { useDispatch } from "react-redux";
+import api from "@/lib/axios.client";
+import { setUser } from "@/store/authSlice";
+import { FormEvent, useState } from "react";
 
-export default function LoginForm() {
+export default function LoginPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  
-  async function handleLogin(e: React.FormEvent) {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
 
-    try{
-      await api.post('/auth/login', {
-        phone,
-        password
-      });
+    const res = await api.post("/auth/login", { phone, password });
 
-      // console.log('userId', res.data.user_id);
-      // console.log("✅ Response data:", res.data);
+    dispatch(setUser(res.data.data));
+    router.push("/users");
+  };
 
-      router.push('/profile');
-    } catch (error){
-      console.log(error);
-      alert('Đăng nhập thất bại')
-    }
-  }
   return (
-    <div>
-      <div className="mt-50">
-        <div className="text-center">
-          <h1 className="text-5xl my-3.5 ">Login</h1>
-        </div>
-        <form
-          onSubmit={handleLogin}
-          className="flex flex-col gap-4 max-w-md mx-auto mt-10"
-        >
-          <div>
-            <label className="block text-gray-700 mb-2">phone: 0888888888 0222222222</label>
-            <input
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-              className="w-full border border-gray-300 p-2 rounded"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 mb-2">Password: phuchoang123</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full border border-gray-300 p-2 rounded"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Đăng nhập
-          </button>
-        </form>
-      </div>
-    </div>
-    
+    <form onSubmit={handleLogin} className="space-y-4 p-8">
+      <input
+        placeholder="Phone"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        className="border px-3 py-2"
+      />
+      <input
+        placeholder="Password"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="border px-3 py-2"
+      />
+      <button type="submit" className="bg-blue-500 text-white px-4 py-2">
+        Login
+      </button>
+    </form>
   );
 }
