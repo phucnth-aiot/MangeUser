@@ -9,11 +9,11 @@ import { setUser, clearUser } from "@/store/authSlice";
 
 function InitAuth() {
   const dispatch = useDispatch();
-
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await api.get("/users");
+        const userid = localStorage.getItem('userid')
+        const res = await api.get(`/users/${userid}`);
         dispatch(setUser(res.data.data));
       } catch {
         dispatch(clearUser());

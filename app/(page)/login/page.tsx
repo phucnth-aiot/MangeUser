@@ -16,9 +16,10 @@ export default function LoginPage() {
     e.preventDefault();
 
     const res = await api.post("/auth/login", { phone, password });
-
-    dispatch(setUser(res.data.data));
-    router.push("/users");
+    const userId = res.data.data.user.userid
+    // localStorage.setItem('userId',userId)
+    dispatch(setUser(res.data.data.user));
+    router.push(`/users/${userId}`);
   };
 
   return (
@@ -29,6 +30,7 @@ export default function LoginPage() {
         onChange={(e) => setPhone(e.target.value)}
         className="border px-3 py-2"
       />
+      0111111111 phuchoang123
       <input
         placeholder="Password"
         type="password"
