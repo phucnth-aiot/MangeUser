@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import api from "@/lib/axios.client";
-import { User } from "@/types/user";
+import { UserInterface } from "@/types/user";
 import { FormEvent } from "react";
 
 export default function EditUserPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserInterface | null>(null);
 
   useEffect(() => {
     if (params.id) {

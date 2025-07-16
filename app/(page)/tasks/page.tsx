@@ -5,7 +5,7 @@ import TasksHeader from "@/components/tasks/TasksHeader";
 import TasksStats from "@/components/tasks/TasksStats";
 import TasksTable from "@/components/tasks/TasksTable";
 import Pagination from "@/components/tasks/Pagination";
-import LoadingSpinner from "@/components/tasks/LoadingSpinner";
+import Loading from "@/components/Loading";
 import api from "@/lib/axios.client";
 import { Task, Meta } from "@/types/task";
 
@@ -29,7 +29,7 @@ export default function TasksPage() {
   }, []);
 
   if (loading) {
-    return <LoadingSpinner />;
+    return <Loading namePage= 'Task'/>;
   }
 
   return (

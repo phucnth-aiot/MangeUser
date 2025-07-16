@@ -3,27 +3,21 @@
 import { useEffect, useState } from "react";
 import api from "@/lib/axios.client";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
+import { UserInterface } from '../../../types/user';
 import { ArrowRight, Edit, Eye, Filter, Mail, Phone, Search, Shield, Trash2, User, UserPlus, Users } from "lucide-react";
 
-interface User {
-  userid: string;
-  username: string;
-  email: string;
-  phone: string;
-  role: string;
-  avatarUrl: string | null;
-}
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserInterface[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("all");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [userToDelete, setUserToDelete] = useState<UserInterface | null>(null);
   const router = useRouter();
   
-  const handleDelete = async (user: User) => {
+  const handleDelete = async (user: UserInterface) => {
     setUserToDelete(user);
     setShowDeleteModal(true);
   };
@@ -83,26 +77,8 @@ export default function UsersPage() {
     return username.charAt(0).toUpperCase();
   };
 
-  // Mock router function
-//   const router = {
-//     push: (path: string) => {
-//       console.log(`Navigating to: ${path}`);
-//     }
-//   };
-
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
-              <span className="text-gray-600">Loading users...</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <Loading namePage= 'Task'/>;
   }
 
   return (
