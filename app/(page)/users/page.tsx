@@ -3,10 +3,14 @@
 import { useEffect, useState } from "react";
 import api from "@/lib/axios.client";
 import { useRouter } from "next/navigation";
-import Loading from "@/components/Loading";
 import { UserInterface } from '../../../types/user';
-import { ArrowRight, Edit, Eye, Filter, Mail, Phone, Search, Shield, Trash2, User, UserPlus, Users } from "lucide-react";
-
+import { ArrowRight, Shield, User, Users } from "lucide-react";
+import Loading from "@/components/Loading";
+import Header from "../../../components/users/Header";
+import StatsCard from "../../../components/users/statsCard";
+import SearchFilter from "../../../components/users/SearchFilter";
+import UsersTable from "../../../components/users/UserTable";
+import DeleteModal from "../../../components/users/DeleteModal";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<UserInterface[]>([]);
@@ -16,8 +20,24 @@ export default function UsersPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState<UserInterface | null>(null);
   const router = useRouter();
-  
-  const handleDelete = async (user: UserInterface) => {
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get("/users");
+      setUsers(res.data.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = (user: UserInterface) => {
     setUserToDelete(user);
     setShowDeleteModal(true);
   };
@@ -34,22 +54,6 @@ export default function UsersPage() {
       }
     }
   };
-
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      const res = await api.get("/users");
-      setUsers(res.data.data);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -78,192 +82,48 @@ export default function UsersPage() {
   };
 
   if (loading) {
-    return <Loading namePage= 'Task'/>;
+    return <Loading namePage="Task" />;
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 p-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">User Management</h1>
-            <p className="text-gray-600">Manage your team members and their permissions</p>
-          </div>
-          <button
-            onClick={() => router.push('/users/create')}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center space-x-2"
-          >
-            <UserPlus className="w-5 h-5" />
-            <span>Create User</span>
-          </button>
-        </div>
-
-        {/* Stats Cards */}
+        <Header onCreateUser={() => router.push('/users/create')} />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900">{users.length}</p>
-              </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-purple-600" />
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Admins</p>
-                <p className="text-2xl font-bold text-purple-600">{users.filter(u => u.role === 'admin').length}</p>
-              </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Shield className="w-6 h-6 text-purple-600" />
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Regular Users</p>
-                <p className="text-2xl font-bold text-blue-600">{users.filter(u => u.role === 'user').length}</p>
-              </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <User className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-          </div>
+          <StatsCard
+            title="Total Users"
+            count={users.length}
+            icon={<Users className="w-6 h-6 text-purple-600" />}
+            color="text-gray-900"
+          />
+          <StatsCard
+            title="Admins"
+            count={users.filter(u => u.role === 'admin').length}
+            icon={<Shield className="w-6 h-6 text-purple-600" />}
+            color="text-purple-600"
+          />
+          <StatsCard
+            title="Regular Users"
+            count={users.filter(u => u.role === 'user').length}
+            icon={<User className="w-6 h-6 text-blue-600" />}
+            color="text-blue-600"
+          />
         </div>
-
-        {/* Search and Filter */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search users..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-            <div className="flex items-center space-x-3">
-              <Filter className="w-5 h-5 text-gray-400" />
-              <select
-                value={filterRole}
-                onChange={(e) => setFilterRole(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              >
-                <option value="all">All Roles</option>
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Users Table */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <h2 className="text-lg font-semibold text-gray-900">Users List</h2>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    User
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Contact
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredUsers.map((user) => (
-                  <tr key={user.userid} className="hover:bg-gray-50 transition-colors duration-200">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold">
-                          {getAvatarFallback(user.username)}
-                        </div>
-                        <div>
-                          <div className="font-semibold text-gray-900">{user.username}</div>
-                          <div className="text-sm text-gray-500">ID: {user.userid}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center space-x-2 text-sm text-gray-600">
-                          <Mail className="w-4 h-4" />
-                          <span>{user.email}</span>
-                        </div>
-                        <div className="flex items-center space-x-2 text-sm text-gray-600">
-                          <Phone className="w-4 h-4" />
-                          <span>{user.phone}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-semibold border ${getRoleStyle(user.role)}`}
-                      >
-                        {getRoleIcon(user.role)}
-                        <span>{user.role.toUpperCase()}</span>
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-3">
-                        <button
-                          onClick={() => router.push(`/users/${user.userid}`)}
-                          className="text-blue-600 hover:text-blue-800 p-2 hover:bg-blue-50 rounded-lg transition-colors duration-200"
-                          title="View User"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => router.push(`/users/${user.userid}/edit`)}
-                          className="text-green-600 hover:text-green-800 p-2 hover:bg-green-50 rounded-lg transition-colors duration-200"
-                          title="Edit User"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(user)}
-                          className="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded-lg transition-colors duration-200"
-                          title="Delete User"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
-          {filteredUsers.length === 0 && (
-            <div className="text-center py-12">
-              <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">No users found</p>
-            </div>
-          )}
-        </div>
-
-        {/* Navigate to Tasks */}
+        <SearchFilter
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          filterRole={filterRole}
+          setFilterRole={setFilterRole}
+        />
+        <UsersTable
+          filteredUsers={filteredUsers}
+          onView={(id) => router.push(`/users/${id}`)}
+          onEdit={(id) => router.push(`/users/${id}/edit`)}
+          onDelete={handleDelete}
+          getRoleStyle={getRoleStyle}
+          getRoleIcon={getRoleIcon}
+          getAvatarFallback={getAvatarFallback}
+        />
         <div className="mt-8 flex justify-end">
           <button
             onClick={() => router.push('/tasks')}
@@ -273,41 +133,13 @@ export default function UsersPage() {
             <ArrowRight className="w-5 h-5" />
           </button>
         </div>
+        <DeleteModal
+          show={showDeleteModal}
+          user={userToDelete}
+          onCancel={() => setShowDeleteModal(false)}
+          onConfirm={confirmDelete}
+        />
       </div>
-
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                <Trash2 className="w-5 h-5 text-red-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Delete User</h3>
-                <p className="text-sm text-gray-600">This action cannot be undone</p>
-              </div>
-            </div>
-            <p className="text-gray-700 mb-6">
-              Are you sure you want to delete <strong>{userToDelete?.username}</strong>?
-            </p>
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

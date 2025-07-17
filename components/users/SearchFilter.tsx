@@ -1,16 +1,18 @@
 import { Filter, Search } from "lucide-react";
 
+interface SearchFilterProps {
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+  filterRole: string;
+  setFilterRole: (value: string) => void;
+}
+
 export default function SearchFilter({
   searchTerm,
   setSearchTerm,
   filterRole,
-  setFilterRole,
-}: {
-  searchTerm: string;
-  setSearchTerm: (val: string) => void;
-  filterRole: string;
-  setFilterRole: (val: string) => void;
-}) {
+  setFilterRole
+}: SearchFilterProps) {
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">

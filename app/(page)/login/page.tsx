@@ -5,6 +5,15 @@ import { useDispatch } from "react-redux";
 import api from "@/lib/axios.client";
 import { setUser } from "@/store/authSlice";
 import { FormEvent, useState } from "react";
+import { AxiosError, AxiosResponse } from 'axios';
+
+// custom error axios for catch can catch error during run but have error
+interface CustomAxiosError extends AxiosError {
+  response?: AxiosResponse<{
+    message?: string;
+  }>;
+  code?: string;
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,10 +22,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  
 
   // Validate phone number (Vietnam format)
   const validatePhone = (phone: string): boolean => {
-    const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
+    const phoneRegex = /^(0[3|5|7|8|9|1])+([0-9]{8})$/;
     return phoneRegex.test(phone);
   };
 
@@ -74,24 +84,26 @@ export default function LoginPage() {
       dispatch(setUser(user));
       router.push(`/users/${userId}`);
 
-    } catch  {
+    } catch (error: unknown) {
       console.error("Login error:", error);
-      // catch (error: any)
-
+      
+      if (error instanceof AxiosError) {
+        const axiosError = error as CustomAxiosError;
+        if (axiosError.response?.status === 400) {
+          setError("Số điện thoại hoặc mật khẩu không chính xác");
+        } else if (axiosError.response?.status === 401) {
+          setError("Thông tin đăng nhập không chính xác");
+        } else if (axiosError.response?.status === 429) {
+          setError("Quá nhiều lần thử. Vui lòng thử lại sau");
+        } else if (axiosError.response?.status === 500) {
+          setError("Lỗi server. Vui lòng thử lại sau");
+        } else if (axiosError.code === 'NETWORK_ERROR') {
+          setError("Lỗi kết nối. Vui lòng kiểm tra internet");
+        } else {
+          setError(axiosError.message || "Đăng nhập thất bại. Vui lòng thử lại");
+        }
+      }
       // Handle different types of errors
-      // if (error.response?.status === 400) {
-      //   setError("Số điện thoại hoặc mật khẩu không chính xác");
-      // } else if (error.response?.status === 401) {
-      //   setError("Thông tin đăng nhập không chính xác");
-      // } else if (error.response?.status === 429) {
-      //   setError("Quá nhiều lần thử. Vui lòng thử lại sau");
-      // } else if (error.response?.status >= 500) {
-      //   setError("Lỗi server. Vui lòng thử lại sau");
-      // } else if (error.code === 'NETWORK_ERROR') {
-      //   setError("Lỗi kết nối. Vui lòng kiểm tra internet");
-      // } else {
-      //   setError(error.message || "Đăng nhập thất bại. Vui lòng thử lại");
-      // }
     } finally {
       setIsLoading(false);
     }

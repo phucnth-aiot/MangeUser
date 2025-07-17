@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import api from "@/lib/axios.client";
-import { User } from "@/types/user";
+import { UserInterface } from "@/types/user";
 
 export default function ViewUserPage() {
   const params = useParams<{ id: string }>();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserInterface | null>(null);
 
   useEffect(() => {
     if (params.id) {

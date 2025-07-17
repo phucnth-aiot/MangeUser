@@ -17,7 +17,7 @@ import {
 import api from "@/lib/axios.client";
 import { useRouter } from "next/navigation";
 
-export default function CreateUserPage() {
+export default function Register() {
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -66,7 +66,7 @@ export default function CreateUserPage() {
 
     try {
       setLoading(true);
-      await api.post("/users", {
+      await api.post("/register", {
         username,
         phone,
         email,
@@ -75,10 +75,10 @@ export default function CreateUserPage() {
       });
       
       // Show success message or redirect
-      router.push("/users");
+      router.push("/register-confirm");
     } catch (error) {
-      console.error("Error creating user:", error);
-      setErrors({ submit: "Failed to create user. Please try again." });
+      console.error("Error register user:", error);
+      setErrors({ submit: "Failed to register. Please try again." });
     } finally {
       setLoading(false);
     }
@@ -108,8 +108,7 @@ export default function CreateUserPage() {
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Create New User</h1>
-            <p className="text-gray-600">Add a new team member to your organization</p>
+            <h1 className="text-3xl font-bold text-gray-900">REGISTER</h1>
           </div>
         </div>
 
@@ -320,12 +319,12 @@ export default function CreateUserPage() {
                 {loading ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Creating...</span>
+                    <span>Registering...</span>
                   </>
                 ) : (
                   <>
                     <UserPlus className="w-5 h-5" />
-                    <span>Create User</span>
+                    <span>Register</span>
                   </>
                 )}
               </button>
@@ -334,7 +333,7 @@ export default function CreateUserPage() {
         </div>
 
         {/* Tips Card */}
-        {/* <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
           <div className="flex items-start space-x-3">
             <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
               <Shield className="w-4 h-4 text-blue-600" />
@@ -349,7 +348,7 @@ export default function CreateUserPage() {
               </ul>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   );

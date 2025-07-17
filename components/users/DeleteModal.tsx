@@ -1,16 +1,15 @@
 import { Trash2 } from "lucide-react";
-import { UserInterface as User } from '../../types/user';
+import { UserInterface } from '../../types/user';
 
-
-export default function DeleteModal({
-  user,
-  onCancel,
-  onConfirm,
-}: {
-  user: User | null;
+interface DeleteModalProps {
+  show: boolean;
+  user: UserInterface | null;
   onCancel: () => void;
   onConfirm: () => void;
-}) {
+}
+
+export default function DeleteModal({ show, user, onCancel, onConfirm }: DeleteModalProps) {
+  if (!show) return null;
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl">

@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const PUBLIC_PATH = ['/', '/login', '/register', './register-confirm']
 export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  if ( PUBLIC_PATH.includes(pathname)) {
+    return NextResponse.next();
+  } 
   const token = req.cookies.get("access_token");
 
   if (!token && req.nextUrl.pathname.startsWith("/users")) {
@@ -11,5 +16,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/users/:path*"],
+  matcher: ["/register/:path*"],
 };
