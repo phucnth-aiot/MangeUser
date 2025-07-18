@@ -2,7 +2,7 @@
 
 import { Provider, useDispatch } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { store, persistor } from "@/lib/store";
+import { store, persistor } from "@/lib/index";
 import { useEffect } from "react";
 import api from "@/lib/axios.client";
 import { setUser, clearUser } from "@/store/authSlice";

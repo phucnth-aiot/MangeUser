@@ -1,6 +1,6 @@
 import { Users } from "lucide-react";
 import { UserInterface } from '../../types/user';
-import UserRow from "./userRow";
+import UserRow from "./UserRow";
 
 interface UsersTableProps {
   filteredUsers: UserInterface[];

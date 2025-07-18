@@ -1,5 +1,5 @@
 "use client";
-
+import { useDispatch } from "react-redux";
 import { FormEvent, useState } from "react";
 import { 
   User, 
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import api from "@/lib/axios.client";
 import { useRouter } from "next/navigation";
+import { setRegisterData } from "@/store/registerSlice";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -27,6 +28,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -66,7 +68,18 @@ export default function Register() {
 
     try {
       setLoading(true);
-      await api.post("/register", {
+
+      dispatch(
+        setRegisterData({
+          username,
+          email,
+          phone,
+          password,
+          role,
+        })
+      )
+
+      await api.post("/auth/register", {
         username,
         phone,
         email,
@@ -102,7 +115,7 @@ export default function Register() {
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <button
-            onClick={() => router.push("/users")}
+            onClick={() => router.push("/")}
             className="p-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors duration-200"
           >
             <ArrowLeft className="w-5 h-5 text-gray-600" />
